@@ -1,6 +1,10 @@
 
 #include "Arduino.h"
 #include "config.h"
+#include <SD.h>
+
+#define CS_PIN D8
+
 
 // set up the 'control' feed
 AdafruitIO_Feed *control_feed = io.feed("control");
@@ -24,6 +28,8 @@ double control_signal;
 double actual_ph_value = 0;
 double desired_ph_value = 5.0;
 double error;
+
+bool log_data = true;
 
 
 void pid_control() {
@@ -82,6 +88,15 @@ void setup() {
 
   Serial.begin(115200);
   while(! Serial);
+
+  if (!SD.begin(CS_PIN)) {
+    Serial.println("Error Initializing SD card");
+  }
+  
+  else{
+    Serial.println("SD card Initialized successfully");
+  }
+
   Serial.print("Connecting to Adafruit IO");
 
 
@@ -90,6 +105,7 @@ void setup() {
   kp_feed->onMessage(handlekpValue);
   ki_feed->onMessage(handlekiValue);
   kd_feed->onMessage(handlekdValue);
+
 
   while(io.mqttStatus() < AIO_CONNECTED) {
     Serial.print(".");
@@ -120,9 +136,34 @@ void loop() {
   Serial.print(",");
   Serial.println(actual_ph_value);
 
+
+
   control_feed->save(control_signal);
   error_feed->save(error);
   actual_feed->save(actual_ph_value);
+
+  //If we are active to log data
+  if(log_data){ 
+    //Open the logging file
+     File dataFile = SD.open("LOG.csv", FILE_WRITE);
+      if (dataFile) { //If the logging file is sucessfully opened
+        dataFile.print(error);
+        dataFile.print(",");
+        dataFile.print(control_signal);
+        dataFile.print(",");
+        dataFile.print(desired_ph_value);
+        dataFile.print(",");
+        dataFile.println(actual_ph_value);
+        //Close the logging file
+        dataFile.close();
+      }
+      else{
+        Serial.println("ERROR Opening logging file");
+      }
+  }
+
+
+
 
    if(error_type == true){ //positive error
       actual_ph_value++;
