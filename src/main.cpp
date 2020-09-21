@@ -145,7 +145,7 @@ void loop() {
   //If we are active to log data
   if(log_data){ 
     //Open the logging file
-     File dataFile = SD.open("LOG.csv", FILE_WRITE);
+     File dataFile = SD.open("PH_LOG.csv", FILE_WRITE);
       if (dataFile) { //If the logging file is sucessfully opened
         dataFile.print(error);
         dataFile.print(",");
