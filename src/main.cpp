@@ -31,7 +31,7 @@ double error;
 
 
 bool log_data = true;
-unsigned long test_duration = 60000;
+unsigned long test_duration = 10000;
 unsigned long test_start_time = 0;
 
 
