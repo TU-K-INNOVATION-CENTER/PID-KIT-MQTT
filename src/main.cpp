@@ -31,7 +31,8 @@ double error;
 
 
 bool log_data = true;
-unsigned long test_duration = 10000;
+bool read_log_file = false;
+unsigned long test_duration = 60000;
 unsigned long test_start_time = 0;
 
 
@@ -102,19 +103,20 @@ void setup() {
 
   Serial.print("Connecting to Adafruit IO");
 
-/*
+
   io.connect();
+  /*
   desired_feed->onMessage(handleDesiredValue);
   kp_feed->onMessage(handlekpValue);
   ki_feed->onMessage(handlekiValue);
   kd_feed->onMessage(handlekdValue); */
 
-/*
+
   while(io.mqttStatus() < AIO_CONNECTED) {
     Serial.print(".");
     delay(500);
   }
-*/
+
  /* desired_feed->get();
   kp_feed->get();
   ki_feed->get();
@@ -136,7 +138,7 @@ void loop() {
 
   io.run();
 
-  while((millis() - test_start_time) < test_duration){
+  if((millis() - test_start_time) < test_duration){
     pid_control();
 
     //If we are active to log data
@@ -182,20 +184,20 @@ void loop() {
 
   }
 
-  Serial.println("out here");
+    if((millis() - test_start_time) > test_duration){
+      File dataFile = SD.open("PH_LOG.csv", FILE_READ);
+      if(dataFile){
+        while (dataFile.available()) {
+          String payload = dataFile.readStringUntil('\n');
+          Serial.println(payload);
+          delay(1000);
+        }
 
-   File dataFile = SD.open("PH_LOG.csv", FILE_READ);
-   if(dataFile){
-     while (dataFile.available()) {
-    	Serial.println(dataFile.readStringUntil('\n'));
-      delay(2000);
+        dataFile.close();
+   }
     }
 
-    dataFile.close();
-   }
-   else{
-     Serial.println("not here");
-   }
+
    
  /* 
   control_feed->save(control_signal);
