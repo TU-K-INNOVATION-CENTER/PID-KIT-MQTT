@@ -20,8 +20,8 @@
 //   - Adafruit AirLift Shield -> https://www.adafruit.com/product/4285
 //   - Adafruit AirLift FeatherWing -> https://www.adafruit.com/product/4264
 
-#define WIFI_SSID "MCLEANS"
-#define WIFI_PASS "agwaya234"
+#define WIFI_SSID "iPhone"
+#define WIFI_PASS "jack1234"
 
 // uncomment the following line if you are using airlift
 // #define USE_AIRLIFT

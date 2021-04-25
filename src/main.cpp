@@ -91,7 +91,6 @@ void handlekdValue(AdafruitIO_Data *data){
 void setup() {
 
   Serial.begin(115200);
-  while(! Serial);
 
   if (!SD.begin(CS_PIN)) {
     Serial.println("Error Initializing SD card");
@@ -105,17 +104,18 @@ void setup() {
 
 
   io.connect();
-  /*
+ 
   desired_feed->onMessage(handleDesiredValue);
   kp_feed->onMessage(handlekpValue);
   ki_feed->onMessage(handlekiValue);
-  kd_feed->onMessage(handlekdValue); */
+  kd_feed->onMessage(handlekdValue); 
 
-
+/*
   while(io.mqttStatus() < AIO_CONNECTED) {
     Serial.print(".");
     delay(500);
   }
+  */
 
  /* desired_feed->get();
   kp_feed->get();
@@ -127,10 +127,10 @@ void setup() {
 
   test_start_time = millis();
 
-   //Check for pre_existing log file and erase
-      if (SD.exists("PH_LOG.csv")) {
-         SD.remove("PH_LOG.csv");
-      } 
+  //Check for pre_existing log file and erase
+  if (SD.exists("PH_LOG.csv")) {
+      SD.remove("PH_LOG.csv");
+  } 
 
 }
 
